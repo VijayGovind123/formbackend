@@ -25,7 +25,7 @@ const mongoose = require("mongoose");
 // });
 
 const openai = new OpenAI({
-  apiKey: process.env.OPEN,
+  apiKey: `${process.env.OPEN}`,
 });
 const transporter = nodemailer.createTransport({
   service: "gmail",
