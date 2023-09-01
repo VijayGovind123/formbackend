@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 //const openai = require("openai");
@@ -24,7 +25,7 @@ const mongoose = require("mongoose");
 // });
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.OPEN,
 });
 const transporter = nodemailer.createTransport({
   service: "gmail",
