@@ -377,7 +377,26 @@ app.post("/generate-sop", async (req, res) => {
       from: "shelbyltdx5@gmail.com", // Replace with your Gmail email address
       to: email,
       subject: "Your Statement of Purpose",
-      text: "Here is your Statement of Purpose in PDF format.",
+      text: `Dear ${name},\n\nHere is your Statement of Purpose in PDF format.\n\n` +
+            `Here are the details you provided:\n\n` +
+            `Name: ${name}\n` +
+            `Email: ${email}\n` +
+            `Age: ${age}\n` +
+            `University: ${university}\n` +
+            `Degree: ${degree}\n` +
+            `Branch: ${branch}\n` +
+            `Work Experience: ${workexp}\n` +
+            `Institute To: ${instituteto}\n` +
+            `Branch To: ${branchto}\n` +
+            `Country: ${country}\n` +
+            `Goals: ${goals}\n` +
+            `Payment Question: ${payQ}\n` +
+            `Fee: ${fee}\n` +
+            `GIC: ${gic}\n` +
+            `Fee GIC: ${feegic}\n\n` +
+            'Thank you for using our service!\n\n' +
+            'Sincerely,\n' +
+            'Your Name and Contact Details' // Add your contact details here,
       attachments: [
         {
           filename: "sop.pdf",
