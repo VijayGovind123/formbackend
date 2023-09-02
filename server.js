@@ -1,133 +1,4 @@
-/*
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-//const openai = require("openai");
-const nodemailer = require("nodemailer");
-const PDFDocument = require("pdfkit");
-const cors = require("cors");
-const fs = require("fs");
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-const { OpenAI } = require("openai");
-//const mongoose = require("mongoose");
-// mongoose
-//   .connect("mongodb+srv://kishore:1234@cluster0.w7w19gv.mongodb.net/gformDB", {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => console.log("Mongoose connected"))
-//   .catch((err) => console.log(err));
 
-// const Query = mongoose.model("Query", {
-//   content: String,
-//   date: Date,
-// });
-
-const openai = new OpenAI({
-  apiKey: "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",
-});
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  // port: 465,
-  secure: false,
-  auth: {
-    user: "shelbyltdx5@gmail.com",
-    pass: "cakjmihgkfnxtvbd",
-  },
-});
-
-// Set up OpenAI API credentials
-//openai.apiKey = "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";
-app.get("/", function (req, res) {
-  res.send("Hello world");
-});
-
-app.post("/generate-sop", async (req, res) => {
-  const {
-    name,
-    email,
-    age,
-    university,
-    degree,
-    branch,
-    workexp,
-    instituteto,
-    branchto,
-    country,
-    goals,
-    payQ,
-    fee,
-    gic,
-    feegic,
-  } = req.body;
-  //mongoose
-  console.log(req.body);
-  const doc = new PDFDocument();
-  const pdfFilePath = "output.pdf";
-  const pdfStream = fs.createWriteStream(pdfFilePath);
-  doc.pipe(pdfStream);
-  const prompt = `Create a Statement of Purpose like a formal letter with my name and adress and thank you at the end with the given details : Name: ${name}, Email: ${email}, Age: ${age}, University: ${university}, Degree: ${degree}, Branch: ${branch}, Work Experience: ${workexp}, Institute To: ${instituteto}, Branch To: ${branchto}, Country: ${country}, Goals: ${goals}, Payment Question: ${payQ}, Fee: ${fee}, GIC: ${gic}, Fee GIC: ${feegic}, Generate a Statement of Purpose (SOP) based on the provided information in a formal letter way with more than 2000 words by elaborating about the institutes. Also write thank you and name at the end`;
-
-  //const prompt = `Write a statement of purpose for ${name} applying to MS using ${email}`;
-  const completion = await openai.completions.create({
-    //engine: 'text-davinci-003', // Adjust the engine as needed
-    prompt: prompt,
-    max_tokens: 600, // Adjust as needed
-    model: "text-davinci-002",
-    temperature: 1, // Specify the model to use
-  });
-  // Process the response from the OpenAI API
-  const generatedText = completion.choices[0].text;
-  console.log(generatedText);
-  // const date = new Date();
-  // const newone = new Query({
-  //   prompt,
-  //   date,
-  // });
-  // await newone.save();
-
-  // Add content to the PDF
-  doc.fontSize(16).text(`Statement of Purpose for ${name}`);
-  //pdf content
-  doc.fontSize(12).text(generatedText);
-
-  doc.end();
-
-  const mailOptions = {
-    from: "shelbyltdx5@gmail.com",
-    to: email,
-    subject: "Your Statement of Purpose",
-    text: "Here is your Statement of Purpose in PDF format.",
-    attachments: [
-      {
-        filename: "sop.pdf",
-        path: pdfFilePath, // Attach the generated PDF file
-        contentType: "application/pdf", // Specify the content type
-      },
-    ],
-  };
-
-  // Send email
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send("Error sending email");
-    } else {
-      console.log("Email sent: " + info.response);
-      res.status(200).send("Email sent successfully");
-    }
-  });
-});
-
-//prev data
-
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
-});
-*/
 
 require("dotenv").config();
 const express = require("express");
@@ -137,8 +8,28 @@ const PDFDocument = require("pdfkit");
 const cors = require("cors");
 const fs = require("fs");
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
+const mongoose = require("mongoose");
+mongoose
+  .connect("mongodb+srv://kishore:1234@cluster0.w7w19gv.mongodb.net/gformDB", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Mongoose connected"))
+  .catch((err) => console.log(err));
+
+const Userdata = mongoose.model("User", {
+  name: String,
+  email: String,
+  age: String,
+  university: String,
+  degree: String,
+  branch: String,
+  instituteto: String,
+  branchto: String,
+});
 
 // Define your OpenAI API key
 const apiKey = process.env.OPEN; // Replace with your actual API key
@@ -274,6 +165,18 @@ app.post("/generate-sop", async (req, res) => {
       feegic,
     } = req.body;
 
+
+    const newUser = new Userdata({
+      name: name,
+      email: email,
+      age: age,
+      university: university,
+      degree: degree,
+      branch: branch,
+      instituteto: instituteto,
+      branchto: branchto,
+    });
+    newUser.save();
     let pdfFilePath;
     requestCount++;
 
