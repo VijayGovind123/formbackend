@@ -82,24 +82,31 @@ function generateCustomLetter(reqBody) {
   doc.fontSize(12).text("Thanks for using our free SOP drafting service! Your SOP is attached below.");
   doc.moveDown(1);
   doc.fontSize(12).text("If you would like further help as follows:");
-  doc.moveDown(1);
+  doc.moveDown(0.2);
   doc.fontSize(12).text("1. Get a complete statement of purpose framed/reviewed by our experts - Buy it here:", {
     link: "https://effizient-immigration-inc.square.site/product/sop/9?cp=true&sa=true&sbp=false&q=false",
   });
-  doc.moveDown(1);
   doc.fontSize(12).text("2. Get your visa application reviewed before submission to IRCC");
-  doc.moveDown(1);
+  doc.moveDown(0.2);
   doc.fontSize(12).text("Feel free to contact us!");
+  doc.moveDown(0.1);
   doc.fontSize(12).text("226-774-9168");
+  doc.moveDown(0.1);
   doc.fontSize(12).text("info@effizient.ca");
+  doc.moveDown(0.1);
   doc.fontSize(12).text("www.effizieint.ca");
+  doc.moveDown(0.1);
   doc.fontSize(12).text("We will get you going with your visa application in no time. This will all be remote, which means you won’t have any hassle at all!");
+  doc.moveDown(0.1);
   doc.fontSize(12).text("Best Regards,");
+  doc.moveDown(0.2);
   doc.fontSize(12).text("Team Effizient");
   doc.moveDown(1);
   doc.moveDown(1);
 
   doc.fontSize(12).text(`From\n${name}\n(Address)\n${email}`);
+  doc.moveDown(1);
+  doc.moveDown(0.3);
   doc.fontSize(12).text("To");
   doc.fontSize(12).text("Visa Officer");
   doc.fontSize(12).text("High Commission of Canada");
@@ -269,5 +276,5 @@ app.post("/generate-sop", async (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port xnx${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
