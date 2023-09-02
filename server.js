@@ -1,4 +1,5 @@
-require('dotenv').config();
+/*
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 //const openai = require("openai");
@@ -10,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 const { OpenAI } = require("openai");
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 // mongoose
 //   .connect("mongodb+srv://kishore:1234@cluster0.w7w19gv.mongodb.net/gformDB", {
 //     useNewUrlParser: true,
@@ -25,7 +26,7 @@ const mongoose = require("mongoose");
 // });
 
 const openai = new OpenAI({
-  apiKey: `${process.env.OPEN}`,
+  apiKey: "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",
 });
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -43,6 +44,7 @@ const transporter = nodemailer.createTransport({
 app.get("/", function (req, res) {
   res.send("Hello world");
 });
+
 app.post("/generate-sop", async (req, res) => {
   const {
     name,
@@ -73,8 +75,8 @@ app.post("/generate-sop", async (req, res) => {
   const completion = await openai.completions.create({
     //engine: 'text-davinci-003', // Adjust the engine as needed
     prompt: prompt,
-    max_tokens: 700, // Adjust as needed
-    model: "text-davinci-003",
+    max_tokens: 600, // Adjust as needed
+    model: "text-davinci-002",
     temperature: 1, // Specify the model to use
   });
   // Process the response from the OpenAI API
@@ -89,7 +91,9 @@ app.post("/generate-sop", async (req, res) => {
 
   // Add content to the PDF
   doc.fontSize(16).text(`Statement of Purpose for ${name}`);
+  //pdf content
   doc.fontSize(12).text(generatedText);
+
   doc.end();
 
   const mailOptions = {
@@ -123,61 +127,25 @@ app.post("/generate-sop", async (req, res) => {
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
+*/
 
-/*
+require("dotenv").config();
 const express = require("express");
-
 const bodyParser = require("body-parser");
-
-const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-// const openai = require('openai');
 const PDFDocument = require("pdfkit");
+const cors = require("cors");
 const fs = require("fs");
-const { Configuration, OpenAIApi } = require("openai");
-
-const configu = new Configuration({
-  apiKey: "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",
-});
-
-const openai = new OpenAIApi(configu);
-// Set up OpenAI API
-
-// console.log(date);
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-app.set("view engine", "ejs");
-
-mongoose.connect("mongodb://localhost:27017/PersonDB", {
-  useNewUrlParser: true,
+// Define your OpenAI API key
+const apiKey = process.env.OPEN; // Replace with your actual API key
+const { OpenAI } = require("openai");
+const openai = new OpenAI({
+  apiKey: apiKey,
 });
-// const openaiApiKey = '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';
-// // openai.configure({ apiKey: openaiApiKey });
-//
-// // const openai = require('openai');
-// const openaiApi = new OpenAIApi({
-//   openaiApiKey,
-// });
-// openai.configure({
-//   apiKey: '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',
-// });
-// const PersonSchema = new mongoose.Schema({
-//   name : String,
-//   place:String
-// });
-//
-// const Person = mongoose.model("Item",PersonSchema);
-// const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'shelbyltdx5@gmail.com',
-//     pass: 'Shelby@12'
-//   }
-// });
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
@@ -189,94 +157,253 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const submittedDataSchema = new mongoose.Schema({
-  // name : String,
-  email: String,
-  // ... Other data fields ...
-});
-
-const SubmittedDataModel = mongoose.model("SubmittedData", submittedDataSchema);
-
-app.get("/", (req, res) => {
-  res.sendFile("index.html");
-});
-
-app.post("/submit", async (req, res) => {
-  // const name= req.body.name;
-  const email = req.body.email;
-
-  // Save data to MongoDB
-  const submittedData = new SubmittedDataModel({
-    // name,
+// Define a function to generate a custom letter
+function generateCustomLetter(reqBody) {
+  const {
+    name,
     email,
-    // ... Other data fields ...
-  });
+    age,
+    university,
+    degree,
+    branch,
+    workexp,
+    instituteto,
+    branchto,
+    country,
+    goals,
+    payQ,
+    fee,
+    gic,
+    feegic,
+  } = reqBody;
 
-  await submittedData.save();
-
-  // Send email to user
-  // const mailOptions = {
-  //   from: 'shelbyltdx5@gmail.com',
-  //   to: email,
-  //   subject: 'Submission Confirmation',
-  //   text: 'Thank you for submitting the form.'
-  // };
-  //
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     console.log('Error sending email: ', error);
-  //   } else {
-  //     console.log('Email sent: ', info.response);
-  //   }
-  // });
-  //
-  // res.send('Data submitted successfully');
-  //  // const obj=new Person({
-  //   name:req.body.name,
-  //   place:req.body.place
-  // })
-  // obj.save().then(()=>{
-  //   console.log("Success");
-  // }).catch((err)=> console.log(err));
-  // res.send("Sent");
-  const prompt = `Write a statement of purpose for subhash applying to cse. coder . software developer`;
-  // const prompt = `Write a statement of purpose for ${student.name} applying to ${student.program}. ${student.achievements}. ${student.goals}`;
-  const openaiResponse = await openai.Completion.create({
-    engine: "text-davinci-003", // Adjust the engine as needed
-    prompt: prompt,
-    max_tokens: 300, // Adjust as needed
-  });
-
-  // Create PDF using PDFKit
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream("sop.pdf"));
-  doc.fontSize(12).text(openaiResponse.choices[0].text);
+  const pdfFilePath = "output.pdf";
+  const pdfStream = fs.createWriteStream(pdfFilePath);
+  doc.pipe(pdfStream);
 
-  // Send email with generated PDF
-  const mailOptions = {
-    from: "your_email",
-    to: email,
-    subject: "Your Statement of Purpose",
-    text: "Please find your SOP attached.",
-    attachments: [
-      {
-        filename: "sop.pdf",
-        path: "sop.pdf",
-      },
-    ],
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+  // Create the custom letter content in a formal manner
+  doc.fontSize(16).text(`Statement of Purpose for ${name}`);
+  doc.moveDown(0.5);
+
+  doc
+    .fontSize(12)
+    .text(`Date: ${new Date().toDateString()}`, { align: "right" });
+
+  doc.moveDown(1);
+
+  doc.fontSize(12).text(`Recipient's Address:`, { underline: true });
+  doc.fontSize(12).text(`[Recipient's Address Line 1]`);
+  doc.fontSize(12).text(`[Recipient's Address Line 2]`);
+  doc.fontSize(12).text(`[Recipient's Address Line 3]`);
+  doc.fontSize(12).text(`[Recipient's City, State, ZIP Code]`);
+  doc.moveDown(0.5);
+
+  doc.fontSize(14).text("Dear Sir/Madam,", { align: "left" });
+  doc.moveDown(0.5);
+
+  doc
+    .fontSize(12)
+    .text(
+      `I am writing to express my interest in pursuing a ${degree} program at ${university}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `My name is ${name} and I am ${age} years old. I hold a Bachelor's degree in ${branch} from ${university}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `I have ${workexp} years of work experience in the field of ${branch}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `My educational journey has instilled in me a passion for learning and a drive to excel in ${degree}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(`I am particularly interested in ${instituteto} in ${branchto}.`, {
+      align: "left",
+    });
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `I aspire to contribute to the field of ${branchto} and believe that ${university} is the ideal place to nurture my skills and knowledge.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc.fontSize(12).text(`In terms of my future goals, I plan to ${goals}.`, {
+    align: "left",
   });
+  doc.moveDown(0.2);
 
-  res.send("SOP generated and sent to your email.");
+  doc
+    .fontSize(12)
+    .text(
+      `Regarding the payment of tuition fees, I have the following response to the payment question: ${payQ}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `The fee structure for the ${degree} program at ${university} is as follows: ${fee}.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `I have arranged for the Guaranteed Investment Certificate (GIC) as a part of the financial requirements.`,
+      { align: "left" }
+    );
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(`The GIC amount for ${gic} covers my living expenses and more.`, {
+      align: "left",
+    });
+  doc.moveDown(0.2);
+
+  doc
+    .fontSize(12)
+    .text(
+      `I have attached the fee receipt and GIC details with this application.`,
+      { align: "left" }
+    );
+
+  doc.moveDown(1);
+
+  doc.fontSize(12).text("Sincerely,", { align: "right" });
+
+  doc.fontSize(12).text(`${name}`, { align: "right" });
+  doc.fontSize(12).text(`Email: ${email}`, { align: "right" });
+
+  doc.end();
+
+  return pdfFilePath;
+}
+
+app.get("/", function (req, res) {
+  res.send("Hello world");
 });
 
-app.listen(3001, () => {
-  console.log("The server has started at port 3000");
+let requestCount = 1;
+const rateLimit = 0; // Example rate limit, adjust as needed
+let rateLimitExceeded = false;
+
+app.post("/generate-sop", async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      age,
+      university,
+      degree,
+      branch,
+      workexp,
+      instituteto,
+      branchto,
+      country,
+      goals,
+      payQ,
+      fee,
+      gic,
+      feegic,
+    } = req.body;
+
+    let pdfFilePath;
+    requestCount++;
+
+    if (requestCount > rateLimit) {
+      rateLimitExceeded = true;
+    }
+
+    // Generate a custom letter if rate limit exceeds
+    if (rateLimitExceeded) {
+      console.log("Rate limit exceeded. Generating custom letter...");
+      pdfFilePath = generateCustomLetter(req.body);
+    } else {
+      // Generate the AI-generated SOP
+      const prompt = `Create a Statement of Purpose like a formal letter with my name and address and thank you at the end with the given details: Name: ${name}, Email: ${email}, Age: ${age}, University: ${university}, Degree: ${degree}, Branch: ${branch}, Work Experience: ${workexp}, Institute To: ${instituteto}, Branch To: ${branchto}, Country: ${country}, Goals: ${goals}, Payment Question: ${payQ}, Fee: ${fee}, GIC: ${gic}, Fee GIC: ${feegic}, Generate a Statement of Purpose (SOP) based on the provided information in a formal letter way with more than 2000 words by elaborating about the institutes. Also write thank you and name at the end`;
+
+      const completion = await openai.completions.create({
+        prompt: prompt,
+        max_tokens: 600,
+        model: "text-davinci-002",
+        temperature: 1,
+      });
+
+      // Process the response from the OpenAI API
+      const generatedText = completion.choices[0].text;
+
+      // Create a PDF with AI-generated content
+      const doc = new PDFDocument();
+      pdfFilePath = "output.pdf";
+      const pdfStream = fs.createWriteStream(pdfFilePath);
+      doc.pipe(pdfStream);
+
+      doc.fontSize(16).text(`Statement of Purpose for ${name}`);
+      doc.moveDown(0.5);
+
+      // Add AI-generated content to the PDF
+      doc.fontSize(12).text(generatedText);
+
+      doc.end();
+    }
+
+    // Send the generated PDF via email
+    const mailOptions = {
+      from: "shelbyltdx5@gmail.com", // Replace with your Gmail email address
+      to: email,
+      subject: "Your Statement of Purpose",
+      text: "Here is your Statement of Purpose in PDF format.",
+      attachments: [
+        {
+          filename: "sop.pdf",
+          path: pdfFilePath,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send("Error sending email");
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(200).send("Email sent successfully");
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
 });
-*/
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port xnx${PORT}`);
+});
