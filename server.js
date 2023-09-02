@@ -396,7 +396,7 @@ app.post("/generate-sop", async (req, res) => {
             `Fee GIC: ${feegic}\n\n` +
             'Thank you for using our service!\n\n' +
             'Sincerely,\n' +
-            'Your Name and Contact Details' // Add your contact details here,
+            'Your Name and Contact Details', // Add your contact details here,
       attachments: [
         {
           filename: "sop.pdf",
