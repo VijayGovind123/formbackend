@@ -202,7 +202,7 @@ app.post("/generate-sop", async (req, res) => {
       const completion = await openai.completions.create({
         prompt: prompt,
         max_tokens: 600,
-        model: "text-davinci-002",
+        model: "text-davinci-003",
         temperature: 1,
       });
 
@@ -248,7 +248,7 @@ app.post("/generate-sop", async (req, res) => {
             `Fee GIC: ${feegic}\n\n` +
             'Thank you for using our service!\n\n' +
             'Sincerely,\n' +
-            'Your Name and Contact Details', // Add your contact details here,
+            'Effizient Team', // Add your contact details here,
       attachments: [
         {
           filename: "sop.pdf",
