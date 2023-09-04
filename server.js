@@ -148,8 +148,8 @@ app.get("/", function (req, res) {
   res.send("Hello world");
 });
 
-let requestCount = 1;
-const rateLimit = 0; // Example rate limit, adjust as needed
+let requestCount = 0;
+const rateLimit = 50; // Example rate limit, adjust as needed
 let rateLimitExceeded = false;
 
 app.post("/generate-sop", async (req, res) => {
